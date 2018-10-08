@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 /**
- * @author: yanhua.chen@bkjk.com
+ * @author: CYH
  * @date: 2018/10/8 16:52
  */
 public class ByteBufTest {
