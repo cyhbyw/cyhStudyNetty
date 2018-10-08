@@ -9,6 +9,7 @@ import com.cyh.consumer.ConsumeHandler;
 import com.cyh.message.TransportMessage;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -60,7 +61,10 @@ public class MyInvocationHandler implements InvocationHandler {
                 }
             });
             ChannelFuture channelFuture = bootstrap.connect(new InetSocketAddress(8080)).sync();
-            channelFuture.channel().closeFuture().sync();
+            Channel channel = channelFuture.channel();
+            System.out.println("客户端即将发送消息: " + message);
+            channel.writeAndFlush(message).sync();
+            channel.closeFuture().sync();
         } finally {
             group.shutdownGracefully();
         }
