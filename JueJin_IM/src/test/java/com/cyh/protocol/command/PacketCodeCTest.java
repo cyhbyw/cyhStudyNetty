@@ -22,9 +22,8 @@ public class PacketCodeCTest {
         packet.setUsername("CYH");
         packet.setPassword("123456");
 
-        PacketCodeC packetCodeC = new PacketCodeC();
-        ByteBuf byteBuf = packetCodeC.encode(packet);
-        Packet decodedPacket = packetCodeC.decode(byteBuf);
+        ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(packet);
+        Packet decodedPacket = PacketCodeC.INSTANCE.decode(byteBuf);
 
         Serializer serializer = new JsonSerializer();
         Assert.assertArrayEquals(serializer.serialize(packet), serializer.serialize(decodedPacket));

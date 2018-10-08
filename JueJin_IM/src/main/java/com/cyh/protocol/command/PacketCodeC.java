@@ -23,7 +23,7 @@ public class PacketCodeC {
     private static final Map<Byte, Serializer> SERIALIZER_MAP = new ConcurrentHashMap<>();
     public static final PacketCodeC INSTANCE = new PacketCodeC();
 
-    public PacketCodeC() {
+    private PacketCodeC() {
         REQUEST_COMMAND_MAP.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
         REQUEST_COMMAND_MAP.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
 
