@@ -12,7 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
- * @author: yanhua.chen@bkjk.com
+ * @author: CYH
  * @date: 2018/10/8 10:24
  */
 public class ProviderHandler extends SimpleChannelInboundHandler {
