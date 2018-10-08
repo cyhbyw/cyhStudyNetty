@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.serialize.Serializer;
 import com.cyh.serialize.impl.JsonSerializer;
 
@@ -19,8 +20,9 @@ public class PacketCodeC {
     private static final Integer MAGIC_NUMBER = 0x12345678;
     private static final Map<Byte, Class<? extends Packet>> REQUEST_COMMAND_MAP = new ConcurrentHashMap<>();
     private static final Map<Byte, Serializer> SERIALIZER_MAP = new ConcurrentHashMap<>();
+    public static final PacketCodeC INSTANCE = new PacketCodeC();
 
-    static {
+    public PacketCodeC() {
         REQUEST_COMMAND_MAP.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
 
         Serializer serializer = new JsonSerializer();
@@ -28,7 +30,11 @@ public class PacketCodeC {
     }
 
     public ByteBuf encode(Packet packet) {
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
+        return encode(ByteBufAllocator.DEFAULT, packet);
+    }
+
+    public ByteBuf encode(ByteBufAllocator allocator, Packet packet) {
+        ByteBuf byteBuf = allocator.ioBuffer();
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         byteBuf.writeInt(MAGIC_NUMBER);

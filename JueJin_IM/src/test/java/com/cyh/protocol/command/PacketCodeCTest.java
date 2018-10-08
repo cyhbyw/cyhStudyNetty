@@ -3,6 +3,7 @@ package com.cyh.protocol.command;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.serialize.Serializer;
 import com.cyh.serialize.impl.JsonSerializer;
 
@@ -17,7 +18,7 @@ public class PacketCodeCTest {
     @Test
     public void testEncodeAndDecode() {
         LoginRequestPacket packet = new LoginRequestPacket();
-        packet.setUserId(1234);
+        packet.setUserId("1234");
         packet.setUsername("CYH");
         packet.setPassword("123456");
 

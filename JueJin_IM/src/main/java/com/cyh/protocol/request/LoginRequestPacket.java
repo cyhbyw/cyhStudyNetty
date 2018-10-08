@@ -1,4 +1,7 @@
-package com.cyh.protocol.command;
+package com.cyh.protocol.request;
+
+import com.cyh.protocol.command.Command;
+import com.cyh.protocol.command.Packet;
 
 import lombok.Data;
 
@@ -9,7 +12,7 @@ import lombok.Data;
 @Data
 public class LoginRequestPacket extends Packet {
 
-    private Integer userId;
+    private String userId;
     private String username;
     private String password;
 
