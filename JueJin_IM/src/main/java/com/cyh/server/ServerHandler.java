@@ -37,7 +37,7 @@ public class ServerHandler extends SimpleChannelInboundHandler {
         }
 
         ByteBuf responseBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), responsePacket);
-        ctx.channel().writeAndFlush(responseBuf);
+        ctx.writeAndFlush(responseBuf);
     }
 
     private boolean valid(LoginRequestPacket packet) {

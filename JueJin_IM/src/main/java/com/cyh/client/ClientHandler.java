@@ -41,6 +41,9 @@ public class ClientHandler extends SimpleChannelInboundHandler {
             } else {
                 System.out.println("客户端登录失败，原因是：" + responsePacket.getReason());
             }
+        } else {
+            System.out.println("解码后的消息不是 LoginResponsePacket 类型，而是 " + packet);
         }
+        ctx.close();
     }
 }

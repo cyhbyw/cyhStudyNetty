@@ -1,6 +1,7 @@
 package com.cyh.client;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -24,7 +25,8 @@ public class NettyClient {
                             ch.pipeline().addLast(new ClientHandler());
                         }
                     });
-            bootstrap.connect("localhost", 8000).sync();
+            ChannelFuture channelFuture = bootstrap.connect("localhost", 8000).sync();
+            channelFuture.channel().closeFuture().sync();
         } finally {
             worker.shutdownGracefully();
         }

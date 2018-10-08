@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.cyh.protocol.request.LoginRequestPacket;
+import com.cyh.protocol.response.LoginResponsePacket;
 import com.cyh.serialize.Serializer;
 import com.cyh.serialize.impl.JsonSerializer;
 
@@ -24,6 +25,7 @@ public class PacketCodeC {
 
     public PacketCodeC() {
         REQUEST_COMMAND_MAP.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
+        REQUEST_COMMAND_MAP.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
 
         Serializer serializer = new JsonSerializer();
         SERIALIZER_MAP.put(serializer.getSerializeAlgorithm(), serializer);
