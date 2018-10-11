@@ -6,6 +6,8 @@ import com.cyh.protocol.command.Packet;
 import com.cyh.protocol.command.PacketCodeC;
 import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.protocol.response.LoginResponsePacket;
+import com.cyh.protocol.response.MessageResponsePacket;
+import com.cyh.utils.LoginUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,15 +37,23 @@ public class ClientHandler extends SimpleChannelInboundHandler {
         ByteBuf byteBuf = (ByteBuf) msg;
         Packet packet = PacketCodeC.INSTANCE.decode(byteBuf);
         if (packet instanceof LoginResponsePacket) {
-            LoginResponsePacket responsePacket = (LoginResponsePacket) packet;
-            if (responsePacket.getSuccess()) {
-                System.out.println("客户端登录成功");
-            } else {
-                System.out.println("客户端登录失败，原因是：" + responsePacket.getReason());
-            }
-        } else {
-            System.out.println("解码后的消息不是 LoginResponsePacket 类型，而是 " + packet);
+            handleForLogin(ctx, (LoginResponsePacket) packet);
+        } else if (packet instanceof MessageResponsePacket) {
+            handleForMessage((MessageResponsePacket) packet);
         }
-        ctx.close();
+        //ctx.close();
+    }
+
+    private void handleForLogin(ChannelHandlerContext ctx, LoginResponsePacket responsePacket) {
+        if (responsePacket.getSuccess()) {
+            System.out.println("客户端登录成功");
+            LoginUtil.markAsLogin(ctx.channel());
+        } else {
+            System.out.println("客户端登录失败，原因是：" + responsePacket.getReason());
+        }
+    }
+
+    private void handleForMessage(MessageResponsePacket responsePacket) {
+        System.out.println("客户端收到服务端回复的消息：" + responsePacket.getMessage());
     }
 }
