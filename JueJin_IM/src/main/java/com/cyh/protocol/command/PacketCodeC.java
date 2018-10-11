@@ -42,15 +42,18 @@ public class PacketCodeC {
 
     public ByteBuf encode(ByteBufAllocator allocator, Packet packet) {
         ByteBuf byteBuf = allocator.ioBuffer();
-        byte[] bytes = Serializer.DEFAULT.serialize(packet);
+        encode(byteBuf, packet);
+        return byteBuf;
+    }
 
+    public void encode(ByteBuf byteBuf, Packet packet) {
+        byte[] bytes = Serializer.DEFAULT.serialize(packet);
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
         byteBuf.writeByte(Serializer.DEFAULT.getSerializeAlgorithm());
         byteBuf.writeByte(packet.getCommand());
         byteBuf.writeInt(bytes.length);
         byteBuf.writeBytes(bytes);
-        return byteBuf;
     }
 
     public Packet decode(ByteBuf byteBuf) {

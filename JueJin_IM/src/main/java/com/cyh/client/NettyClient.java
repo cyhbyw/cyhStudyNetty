@@ -3,6 +3,10 @@ package com.cyh.client;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import com.cyh.client.handler.ClientLoginHandler;
+import com.cyh.client.handler.ClientMessageHandler;
+import com.cyh.codec.PacketDecoder;
+import com.cyh.codec.PacketEncoder;
 import com.cyh.protocol.command.PacketCodeC;
 import com.cyh.protocol.request.MessageRequestPacket;
 import com.cyh.utils.LoginUtil;
@@ -13,6 +17,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
@@ -31,7 +36,11 @@ public class NettyClient {
                     .handler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
-                            ch.pipeline().addLast(new ClientHandler());
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new PacketDecoder());
+                            pipeline.addLast(new ClientLoginHandler());
+                            pipeline.addLast(new ClientMessageHandler());
+                            pipeline.addLast(new PacketEncoder());
                         }
                     });
             ChannelFuture channelFuture = connect(bootstrap);
