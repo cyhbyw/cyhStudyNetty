@@ -13,11 +13,13 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author: CYH
  * @date: 2018/10/8 18:24
  */
+@Slf4j
 public class NettyServer {
 
     public static void main(String[] args) throws Exception {
@@ -32,10 +34,11 @@ public class NettyServer {
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            ////// 这个顺序与教程中的不一样，需要去理解这是为什么？
                             pipeline.addLast(new PacketDecoder());
+                            pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new ServerLoginHandler());
                             pipeline.addLast(new ServerMessageHandler());
-                            pipeline.addLast(new PacketEncoder());
                         }
                     });
             ChannelFuture channelFuture = bind(serverBootstrap, 8000);
@@ -50,7 +53,7 @@ public class NettyServer {
         ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
-                System.out.println("服务器启动成功，端口: " + port);
+                log.debug("服务器启动成功，端口: " + port);
             } else {
                 System.err.println("Failed，端口: " + port);
             }

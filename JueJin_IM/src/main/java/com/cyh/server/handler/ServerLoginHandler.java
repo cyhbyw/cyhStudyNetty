@@ -5,25 +5,27 @@ import com.cyh.protocol.response.LoginResponsePacket;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author: CYH
  * @date: 2018/10/11 19:46
  */
+@Slf4j
 public class ServerLoginHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) throws Exception {
-        System.out.println("客户端开始登录");
+    protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) {
+        log.debug("客户端开始登录");
         LoginResponsePacket responsePacket = new LoginResponsePacket();
         responsePacket.setVersion(loginRequestPacket.getVersion());
         if (valid(loginRequestPacket)) {
             responsePacket.setSuccess(true);
-            System.out.println("登录成功");
+            log.debug("登录成功");
         } else {
             responsePacket.setSuccess(false);
             responsePacket.setReason("账号密码不对");
-            System.out.println("登录失败");
+            log.debug("登录失败");
         }
         ctx.writeAndFlush(responsePacket);
     }

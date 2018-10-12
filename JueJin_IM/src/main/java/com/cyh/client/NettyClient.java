@@ -37,10 +37,11 @@ public class NettyClient {
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            ////// 这个顺序与教程中的不一样，需要去理解这是为什么？
                             pipeline.addLast(new PacketDecoder());
+                            pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new ClientLoginHandler());
                             pipeline.addLast(new ClientMessageHandler());
-                            pipeline.addLast(new PacketEncoder());
                         }
                     });
             ChannelFuture channelFuture = connect(bootstrap);

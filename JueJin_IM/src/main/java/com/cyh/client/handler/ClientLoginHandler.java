@@ -8,16 +8,18 @@ import com.cyh.utils.LoginUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author: CYH
  * @date: 2018/10/11 19:35
  */
+@Slf4j
 public class ClientLoginHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("通道已经建立，客户端开始登录");
+    public void channelActive(ChannelHandlerContext ctx) {
+        log.debug("通道已经建立，客户端开始登录");
         LoginRequestPacket requestPacket = new LoginRequestPacket();
         requestPacket.setUserId(UUID.randomUUID().toString());
         requestPacket.setUsername("CYH");
@@ -26,12 +28,12 @@ public class ClientLoginHandler extends SimpleChannelInboundHandler<LoginRespons
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket responsePacket) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket responsePacket) {
         if (responsePacket.getSuccess()) {
-            System.out.println("客户端登录成功");
+            log.debug("客户端登录成功");
             LoginUtil.markAsLogin(ctx.channel());
         } else {
-            System.out.println("客户端登录失败，原因是：" + responsePacket.getReason());
+            log.debug("客户端登录失败，原因是：" + responsePacket.getReason());
         }
     }
 }
