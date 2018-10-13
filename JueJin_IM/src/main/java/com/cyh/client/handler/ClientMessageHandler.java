@@ -15,6 +15,8 @@ public class ClientMessageHandler extends SimpleChannelInboundHandler<MessageRes
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageResponsePacket responsePacket) {
-        log.debug("客户端收到服务端回复的消息：" + responsePacket.getMessage());
+        String fromUserId = responsePacket.getFromUserId();
+        String fromUserName = responsePacket.getFromUserName();
+        log.debug("{}:{} 说: {}", fromUserId, fromUserName, responsePacket.getMessage());
     }
 }

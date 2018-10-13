@@ -8,12 +8,11 @@ import com.cyh.client.handler.ClientMessageHandler;
 import com.cyh.codec.PacketDecoder;
 import com.cyh.codec.PacketEncoder;
 import com.cyh.codec.Splitter;
-import com.cyh.protocol.command.PacketCodeC;
+import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.protocol.request.MessageRequestPacket;
-import com.cyh.utils.LoginUtil;
+import com.cyh.utils.SessionUtil;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -63,24 +62,34 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        Scanner scanner = new Scanner(System.in);
+
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.print("请输入需要发送到服务端的消息：");
-                    Scanner scanner = new Scanner(System.in);
-                    String line = scanner.nextLine();
-                    MessageRequestPacket requestPacket = new MessageRequestPacket();
-                    requestPacket.setMessage(line);
-                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), requestPacket);
-                    channel.writeAndFlush(byteBuf);
+                sleep();
+                if (!SessionUtil.hasLogin(channel)) {
+                    System.out.print("输入用户名登录: ");
+                    LoginRequestPacket requestPacket = new LoginRequestPacket();
+                    requestPacket.setUsername(scanner.nextLine());
+                    requestPacket.setPassword("123456");
+                    channel.writeAndFlush(requestPacket);
+                } else {
+                    System.out.print("请输入<toUserId> <message>: ");
+                    String toUserId = scanner.next();
+                    String message = scanner.next();
+                    MessageRequestPacket requestPacket = new MessageRequestPacket(toUserId, message);
+                    channel.writeAndFlush(requestPacket);
                 }
             }
         }).start();
+    }
+
+    private static void sleep() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
