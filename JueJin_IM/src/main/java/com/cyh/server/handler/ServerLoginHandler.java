@@ -2,6 +2,7 @@ package com.cyh.server.handler;
 
 import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.protocol.response.LoginResponsePacket;
+import com.cyh.utils.LoginUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -20,6 +21,7 @@ public class ServerLoginHandler extends SimpleChannelInboundHandler<LoginRequest
         LoginResponsePacket responsePacket = new LoginResponsePacket();
         responsePacket.setVersion(loginRequestPacket.getVersion());
         if (valid(loginRequestPacket)) {
+            LoginUtil.markAsLogin(ctx.channel());
             responsePacket.setSuccess(true);
             log.debug("登录成功");
         } else {
