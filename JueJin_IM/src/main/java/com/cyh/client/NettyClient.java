@@ -7,6 +7,7 @@ import com.cyh.client.handler.ClientLoginHandler;
 import com.cyh.client.handler.ClientMessageHandler;
 import com.cyh.codec.PacketDecoder;
 import com.cyh.codec.PacketEncoder;
+import com.cyh.codec.Splitter;
 import com.cyh.protocol.command.PacketCodeC;
 import com.cyh.protocol.request.MessageRequestPacket;
 import com.cyh.utils.LoginUtil;
@@ -37,6 +38,7 @@ public class NettyClient {
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new Splitter());
                             ////// 这个顺序与教程中的不一样，需要去理解这是为什么？
                             pipeline.addLast(new PacketDecoder());
                             pipeline.addLast(new PacketEncoder());

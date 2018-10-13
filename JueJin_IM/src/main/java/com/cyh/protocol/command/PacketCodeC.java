@@ -20,7 +20,7 @@ import io.netty.buffer.ByteBufAllocator;
  */
 public class PacketCodeC {
 
-    private static final Integer MAGIC_NUMBER = 0x12345678;
+    public static final Integer MAGIC_NUMBER = 0x12345678;
     private static final Map<Byte, Class<? extends Packet>> REQUEST_COMMAND_MAP = new ConcurrentHashMap<>();
     private static final Map<Byte, Serializer> SERIALIZER_MAP = new ConcurrentHashMap<>();
     public static final PacketCodeC INSTANCE = new PacketCodeC();
