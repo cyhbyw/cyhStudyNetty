@@ -3,6 +3,7 @@ package com.cyh.server;
 import com.cyh.codec.PacketDecoder;
 import com.cyh.codec.PacketEncoder;
 import com.cyh.codec.Splitter;
+import com.cyh.server.handler.LifeCyCleTestHandler;
 import com.cyh.server.handler.ServerLoginHandler;
 import com.cyh.server.handler.ServerMessageHandler;
 
@@ -35,6 +36,7 @@ public class NettyServer {
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new LifeCyCleTestHandler());
                             pipeline.addLast(new Splitter());
                             ////// 这个顺序与教程中的不一样，需要去理解这是为什么？
                             pipeline.addLast(new PacketDecoder());
