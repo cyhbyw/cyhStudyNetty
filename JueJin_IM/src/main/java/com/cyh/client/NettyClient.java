@@ -3,13 +3,14 @@ package com.cyh.client;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import com.cyh.client.console.ConsoleCommandManager;
+import com.cyh.client.console.LoginConsoleCommand;
+import com.cyh.client.handler.ClientCreateGroupHandler;
 import com.cyh.client.handler.ClientLoginHandler;
 import com.cyh.client.handler.ClientMessageHandler;
 import com.cyh.codec.PacketDecoder;
 import com.cyh.codec.PacketEncoder;
 import com.cyh.codec.Splitter;
-import com.cyh.protocol.request.LoginRequestPacket;
-import com.cyh.protocol.request.MessageRequestPacket;
 import com.cyh.utils.SessionUtil;
 
 import io.netty.bootstrap.Bootstrap;
@@ -43,6 +44,7 @@ public class NettyClient {
                             pipeline.addLast(new PacketEncoder());
                             pipeline.addLast(new ClientLoginHandler());
                             pipeline.addLast(new ClientMessageHandler());
+                            pipeline.addLast(new ClientCreateGroupHandler());
                         }
                     });
             ChannelFuture channelFuture = connect(bootstrap);
@@ -63,22 +65,15 @@ public class NettyClient {
 
     private static void startConsoleThread(Channel channel) {
         Scanner scanner = new Scanner(System.in);
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
 
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 sleep();
                 if (!SessionUtil.hasLogin(channel)) {
-                    System.out.print("输入用户名登录: ");
-                    LoginRequestPacket requestPacket = new LoginRequestPacket();
-                    requestPacket.setUsername(scanner.nextLine());
-                    requestPacket.setPassword("123456");
-                    channel.writeAndFlush(requestPacket);
+                    loginConsoleCommand.execute(scanner, channel);
                 } else {
-                    System.out.print("请输入<toUserId> <message>: ");
-                    String toUserId = scanner.next();
-                    String message = scanner.next();
-                    MessageRequestPacket requestPacket = new MessageRequestPacket(toUserId, message);
-                    channel.writeAndFlush(requestPacket);
+                    ConsoleCommandManager.execute(scanner, channel);
                 }
             }
         }).start();

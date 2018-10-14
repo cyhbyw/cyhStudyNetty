@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cyh.protocol.request.CreateGroupRequestPacket;
 import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.protocol.request.MessageRequestPacket;
+import com.cyh.protocol.response.CreateGroupResponsePacket;
 import com.cyh.protocol.response.LoginResponsePacket;
 import com.cyh.protocol.response.MessageResponsePacket;
 import com.cyh.serialize.Serializer;
@@ -31,6 +33,8 @@ public class PacketCodeC {
         REQUEST_COMMAND_MAP.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
         REQUEST_COMMAND_MAP.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
         REQUEST_COMMAND_MAP.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
+        REQUEST_COMMAND_MAP.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        REQUEST_COMMAND_MAP.put(Command.CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         Serializer serializer = new JsonSerializer();
         SERIALIZER_MAP.put(serializer.getSerializeAlgorithm(), serializer);
