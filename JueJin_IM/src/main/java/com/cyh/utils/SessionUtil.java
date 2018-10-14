@@ -7,6 +7,7 @@ import com.cyh.attribute.Attributes;
 import com.cyh.session.Session;
 
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
 
 /**
  * @author: CYH
@@ -15,6 +16,7 @@ import io.netty.channel.Channel;
 public class SessionUtil {
 
     private static final Map<String, Channel> USER_ID_CHANNEL_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, ChannelGroup> CHANNEL_GROUP_MAP = new ConcurrentHashMap<>();
 
 
     public static void bindSession(Session session, Channel channel) {
@@ -40,5 +42,13 @@ public class SessionUtil {
 
     public static Channel getChannel(String userId) {
         return USER_ID_CHANNEL_MAP.get(userId);
+    }
+
+    public static void bindChannelGroup(String groupId, ChannelGroup channelGroup) {
+        CHANNEL_GROUP_MAP.put(groupId, channelGroup);
+    }
+
+    public static ChannelGroup getChannelGroup(String groupId) {
+        return CHANNEL_GROUP_MAP.get(groupId);
     }
 }

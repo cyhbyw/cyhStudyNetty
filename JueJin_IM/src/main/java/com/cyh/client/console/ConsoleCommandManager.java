@@ -15,16 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class ConsoleCommandManager {
 
-    private static final Map<String, ConsoleCommand> MAP = new ConcurrentHashMap<>();
+    private static final Map<String, ConsoleCommand> CONSOLE_COMMAND_MAP = new ConcurrentHashMap<>();
 
     static {
-        MAP.put("CreateGroup", new CreateGroupConsoleCommand());
+        CONSOLE_COMMAND_MAP.put("CreateGroup", new CreateGroupConsoleCommand());
+        CONSOLE_COMMAND_MAP.put("JoinGroup", new JoinGroupConsoleCommand());
+        CONSOLE_COMMAND_MAP.put("QuitGroup", new QuitGroupConsoleCommand());
+        CONSOLE_COMMAND_MAP.put("ListGroupMembers", new ListGroupMembersConsoleCommand());
     }
 
     public static void execute(Scanner scanner, Channel channel) {
         System.out.print("输入指令: ");
         String command = scanner.next();
-        ConsoleCommand consoleCommand = MAP.get(command);
+        ConsoleCommand consoleCommand = CONSOLE_COMMAND_MAP.get(command);
         if (Objects.nonNull(consoleCommand)) {
             consoleCommand.execute(scanner, channel);
         } else {

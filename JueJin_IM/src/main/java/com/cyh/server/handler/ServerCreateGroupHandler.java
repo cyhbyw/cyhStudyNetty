@@ -46,6 +46,8 @@ public class ServerCreateGroupHandler extends SimpleChannelInboundHandler<Create
         responsePacket.setUserNameList(usernameList);
         channelGroup.writeAndFlush(responsePacket);
 
+        SessionUtil.bindChannelGroup(groupId, channelGroup);
+
         log.debug("群创建成功！groupId={}，群成员={}", groupId, usernameList);
     }
 }

@@ -6,8 +6,11 @@ import java.util.concurrent.TimeUnit;
 import com.cyh.client.console.ConsoleCommandManager;
 import com.cyh.client.console.LoginConsoleCommand;
 import com.cyh.client.handler.ClientCreateGroupHandler;
+import com.cyh.client.handler.ClientJoinGroupHandler;
+import com.cyh.client.handler.ClientListGroupMembersHandler;
 import com.cyh.client.handler.ClientLoginHandler;
 import com.cyh.client.handler.ClientMessageHandler;
+import com.cyh.client.handler.ClientQuitGroupHandler;
 import com.cyh.codec.PacketDecoder;
 import com.cyh.codec.PacketEncoder;
 import com.cyh.codec.Splitter;
@@ -45,6 +48,9 @@ public class NettyClient {
                             pipeline.addLast(new ClientLoginHandler());
                             pipeline.addLast(new ClientMessageHandler());
                             pipeline.addLast(new ClientCreateGroupHandler());
+                            pipeline.addLast(new ClientJoinGroupHandler());
+                            pipeline.addLast(new ClientQuitGroupHandler());
+                            pipeline.addLast(new ClientListGroupMembersHandler());
                         }
                     });
             ChannelFuture channelFuture = connect(bootstrap);
