@@ -5,12 +5,14 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.cyh.protocol.request.CreateGroupRequestPacket;
+import com.cyh.protocol.request.GroupMessageRequestPacket;
 import com.cyh.protocol.request.JoinGroupRequestPacket;
 import com.cyh.protocol.request.ListGroupMembersRequestPacket;
 import com.cyh.protocol.request.LoginRequestPacket;
 import com.cyh.protocol.request.MessageRequestPacket;
 import com.cyh.protocol.request.QuitGroupRequestPacket;
 import com.cyh.protocol.response.CreateGroupResponsePacket;
+import com.cyh.protocol.response.GroupMessageResponsePacket;
 import com.cyh.protocol.response.JoinGroupResponsePacket;
 import com.cyh.protocol.response.ListGroupMembersResponsePacket;
 import com.cyh.protocol.response.LoginResponsePacket;
@@ -51,6 +53,9 @@ public class PacketCodeC {
 
         REQUEST_COMMAND_MAP.put(Command.LIST_GROUP_MEMBERS_REQUEST, ListGroupMembersRequestPacket.class);
         REQUEST_COMMAND_MAP.put(Command.LIST_GROUP_MEMBERS_RESPONSE, ListGroupMembersResponsePacket.class);
+
+        REQUEST_COMMAND_MAP.put(Command.GROUP_MESSAGE_REQUEST, GroupMessageRequestPacket.class);
+        REQUEST_COMMAND_MAP.put(Command.GROUP_MESSAGE_RESPONSE, GroupMessageResponsePacket.class);
 
         Serializer serializer = new JsonSerializer();
         SERIALIZER_MAP.put(serializer.getSerializeAlgorithm(), serializer);

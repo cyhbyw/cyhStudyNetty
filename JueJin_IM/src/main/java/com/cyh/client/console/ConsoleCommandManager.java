@@ -22,6 +22,7 @@ public final class ConsoleCommandManager {
         CONSOLE_COMMAND_MAP.put("JoinGroup", new JoinGroupConsoleCommand());
         CONSOLE_COMMAND_MAP.put("QuitGroup", new QuitGroupConsoleCommand());
         CONSOLE_COMMAND_MAP.put("ListGroupMembers", new ListGroupMembersConsoleCommand());
+        CONSOLE_COMMAND_MAP.put("SendToGroup", new GroupMessageConsoleCommand());
     }
 
     public static void execute(Scanner scanner, Channel channel) {

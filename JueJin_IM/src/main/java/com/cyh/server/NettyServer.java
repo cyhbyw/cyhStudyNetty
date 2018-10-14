@@ -6,6 +6,7 @@ import com.cyh.codec.Splitter;
 import com.cyh.server.handler.AuthHandler;
 import com.cyh.server.handler.LifeCyCleTestHandler;
 import com.cyh.server.handler.ServerCreateGroupHandler;
+import com.cyh.server.handler.ServerGroupMessageHandler;
 import com.cyh.server.handler.ServerJoinGroupHandler;
 import com.cyh.server.handler.ServerListGroupMembersHandler;
 import com.cyh.server.handler.ServerLoginHandler;
@@ -53,6 +54,7 @@ public class NettyServer {
                             pipeline.addLast(new ServerJoinGroupHandler());
                             pipeline.addLast(new ServerQuitGroupHandler());
                             pipeline.addLast(new ServerListGroupMembersHandler());
+                            pipeline.addLast(new ServerGroupMessageHandler());
                         }
                     });
             ChannelFuture channelFuture = bind(serverBootstrap, 8000);
