@@ -1,0 +1,23 @@
+package nia.chapter10;
+
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ReplayingDecoder;
+
+/**
+ * 代码清单 10-2 ToIntegerDecoder2 类扩展了 ReplayingDecoder
+ *
+ * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
+ */
+public class ToIntegerDecoder2 extends ReplayingDecoder<Void> {
+
+    @Override
+    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        //传入的 ByteBuf 是 ReplayingDecoderByteBuf
+        //从入站 ByteBuf 中读取 一个 int，并将其添加到解码消息的 List 中
+        out.add(in.readInt());
+    }
+}
+
