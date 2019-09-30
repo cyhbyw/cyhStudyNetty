@@ -1,15 +1,14 @@
 package nia.test.chapter9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import nia.chapter9.AbsIntegerEncoder;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 代码清单9-4 测试 AbsIntegerEncoder
@@ -35,7 +34,7 @@ public class AbsIntegerEncoderTest {
         // read bytes
         //(5) 读取所产生的消息，并断言它们包含了对应的绝对值
         for (int i = 1; i < 10; i++) {
-            assertEquals(i, channel.readOutbound());
+            assertEquals(i, (int) channel.readOutbound());
         }
         assertNull(channel.readOutbound());
     }
