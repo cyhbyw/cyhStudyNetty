@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 代码清单 2-3 客户端的 ChannelHandler
@@ -14,7 +15,12 @@ import io.netty.util.CharsetUtil;
  */
 //标记该类的实例可以被多个 Channel 共享
 @Sharable
+@Slf4j
 public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
+    public EchoClientHandler() {
+        log.debug("EchoClientHandler()");
+    }
 
     /**
      * 当与服务器建立连接之后被调用
@@ -24,7 +30,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     public void channelActive(ChannelHandlerContext ctx) {
         //当被通知 Channel是活跃的时候，发送一条消息
         String msg = "Netty rocks!";
-        System.out.println("channelActive(). Client will send msg: " + msg);
+        log.debug("channelActive(). Client will send msg: " + msg);
         ctx.writeAndFlush(Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8));
     }
 
@@ -36,7 +42,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
         //记录已接收消息的转储
-        System.out.println("Client received: " + in.toString(CharsetUtil.UTF_8));
+        log.debug("Client received: " + in.toString(CharsetUtil.UTF_8));
     }
 
     /**

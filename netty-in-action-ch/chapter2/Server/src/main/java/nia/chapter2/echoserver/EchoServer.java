@@ -9,29 +9,21 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 代码清单 2-2 EchoServer 类
  *
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
+@Slf4j
 public class EchoServer {
-    private final int port;
-
-    public EchoServer(int port) {
-        this.port = port;
-    }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.err.println("Usage: " + EchoServer.class.getSimpleName() + " <port>");
-            return;
-        }
-        int port = Integer.parseInt(args[0]);
-        new EchoServer(port).start();
+        new EchoServer().start(8080);
     }
 
-    public void start() throws Exception {
+    private void start(int port) throws Exception {
         //(1) 创建EventLoopGroup
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         try {
@@ -54,7 +46,7 @@ public class EchoServer {
                     });
             //(6) 异步地绑定服务器；调用 sync()方法阻塞等待直到绑定完成
             ChannelFuture channelFuture = serverBootstrap.bind().sync();
-            System.out.println(EchoServer.class.getName() + " started and listening for connections on "
+            log.debug(EchoServer.class.getName() + " started and listening for connections on "
                     + channelFuture.channel().localAddress());
             //(7) 获取 Channel 的CloseFuture，并且阻塞当前线程直到它完成
             channelFuture.channel().closeFuture().sync();

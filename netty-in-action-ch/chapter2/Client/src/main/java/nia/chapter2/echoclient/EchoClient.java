@@ -9,22 +9,21 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 代码清单 2-4 客户端的主类
  *
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
+@Slf4j
 public class EchoClient {
-    private final String host;
-    private final int port;
 
-    public EchoClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public static void main(String[] args) throws Exception {
+        new EchoClient().start("localhost", 8080);
     }
 
-    public void start() throws Exception {
+    public void start(String host, int port) throws Exception {
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         try {
             //创建 Bootstrap
@@ -50,17 +49,6 @@ public class EchoClient {
             //关闭线程池并且释放所有的资源
             eventLoopGroup.shutdownGracefully().sync();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.err.println("Usage: " + EchoClient.class.getSimpleName() + " <host> <port>");
-            return;
-        }
-
-        final String host = args[0];
-        final int port = Integer.parseInt(args[1]);
-        new EchoClient(host, port).start();
     }
 }
 
