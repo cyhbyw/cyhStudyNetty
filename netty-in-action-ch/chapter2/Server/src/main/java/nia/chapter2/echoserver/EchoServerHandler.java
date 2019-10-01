@@ -25,6 +25,12 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
         log.debug("public EchoServerHandler()");
     }
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        log.debug("channelActive()");
+    }
+
     /**
      * 对于每个传入的消息都要调用
      * @param ctx
@@ -36,7 +42,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
         //将消息记录到控制台
         log.debug("Server received: " + in.toString(CharsetUtil.UTF_8));
         in.writeByte(' ');
-        in.writeBytes(LocalDateTime.now().toString().getBytes());
+        in.writeBytes(("ResponseTime=" + LocalDateTime.now()).getBytes());
         log.debug("Server will return: " + in.toString(CharsetUtil.UTF_8));
         //将接收到的消息写给发送者，而不冲刷出站消息
         ctx.write(in);

@@ -42,7 +42,9 @@ public class EchoClient {
                         }
                     });
             //连接到远程节点，阻塞等待直到连接完成
+            log.debug("Begin to connect");
             ChannelFuture channelFuture = bootstrap.connect().sync();
+            log.debug("Connected to server: " + channelFuture.channel().remoteAddress());
             //阻塞，直到Channel 关闭
             channelFuture.channel().closeFuture().sync();
         } finally {

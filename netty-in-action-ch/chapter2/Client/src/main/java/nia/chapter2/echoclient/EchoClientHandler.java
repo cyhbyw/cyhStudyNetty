@@ -1,5 +1,7 @@
 package nia.chapter2.echoclient;
 
+import java.time.LocalDateTime;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -29,7 +31,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         //当被通知 Channel是活跃的时候，发送一条消息
-        String msg = "Netty rocks!";
+        String msg = "RequestTime=" + LocalDateTime.now();
         log.debug("channelActive(). Client will send msg: " + msg);
         ctx.writeAndFlush(Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8));
     }
