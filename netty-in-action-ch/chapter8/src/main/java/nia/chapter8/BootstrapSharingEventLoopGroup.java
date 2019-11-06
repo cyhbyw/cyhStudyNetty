@@ -47,7 +47,11 @@ public class BootstrapSharingEventLoopGroup {
                                 System.out.println("Received data");
                             }
                         });
-                        //使用与分配给已被接受的子Channel相同的EventLoop
+                        /**
+                         * 使用与分配给已被接受的子Channel相同的EventLoop
+                         * 通过将已被接受的子Channel的EventLoop传递给Bootstrap的group()方法来共享该EventLoop
+                         * 因为分配给EventLoop的所有Channel都使用同一个线程，所以这避免了额外的线程创建以及相关的上下文切换
+                         */
                         bootstrap.group(ctx.channel().eventLoop());
                         //连接到远程节点
                         connectFuture = bootstrap.connect(new InetSocketAddress("www.manning.com", 80));
