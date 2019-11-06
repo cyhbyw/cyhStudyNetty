@@ -29,7 +29,7 @@ public class WriteHandlers {
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE;
         // 获取到与 ChannelHandlerContext 相关联的 Channel 的引用
         Channel channel = ctx.channel();
-        // 通过 Channel 写入缓冲区
+        // 通过 Channel 写入缓冲区，事件流将传播到整个ChannelPipeline
         channel.write(Unpooled.copiedBuffer("Netty in Action", CharsetUtil.UTF_8));
     }
 
@@ -40,7 +40,7 @@ public class WriteHandlers {
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE;
         // 获取到与 ChannelHandlerContext 相关联的 ChannelPipeline 的引用
         ChannelPipeline pipeline = ctx.pipeline();
-        // 通过 ChannelPipeline 写入缓冲区
+        // 通过 ChannelPipeline 写入缓冲区，事件流将传播到整个ChannelPipeline
         pipeline.write(Unpooled.copiedBuffer("Netty in Action", CharsetUtil.UTF_8));
     }
 
@@ -50,7 +50,7 @@ public class WriteHandlers {
     public static void writeViaChannelHandlerContext() {
         // 获取到 ChannelHandlerContext 的引用
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE;
-        //write()方法将把缓冲区数据发送到下一个 ChannelHandler
+        //write()方法将把缓冲区数据发送到下一个 ChannelHandler，事件流从下一个ChannelHandler开始
         ctx.write(Unpooled.copiedBuffer("Netty in Action", CharsetUtil.UTF_8));
     }
 
