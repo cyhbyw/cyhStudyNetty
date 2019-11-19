@@ -9,11 +9,14 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Administrator
  * @date 2014年2月16日
  * @version 1.0
  */
+@Slf4j
 public class TimeClientHandle implements Runnable {
 
     private String host;
@@ -85,6 +88,7 @@ public class TimeClientHandle implements Runnable {
             // 判断是否连接成功
             SocketChannel sc = (SocketChannel) key.channel();
             if (key.isConnectable()) {
+                log.debug("key isConnectable().");
                 if (sc.finishConnect()) {
                     sc.register(selector, SelectionKey.OP_READ);
                     doWrite(sc);
@@ -93,6 +97,7 @@ public class TimeClientHandle implements Runnable {
                 }
             }
             if (key.isReadable()) {
+                log.debug("key isReadable(). Will read data");
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
                 int readBytes = sc.read(readBuffer);
                 if (readBytes > 0) {
@@ -100,7 +105,7 @@ public class TimeClientHandle implements Runnable {
                     byte[] bytes = new byte[readBuffer.remaining()];
                     readBuffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
-                    System.out.println("Current time is: " + body);
+                    log.debug("Current time is: " + body);
                     this.stop = true;
                 } else if (readBytes < 0) {
                     // 对端链路关闭
@@ -131,7 +136,7 @@ public class TimeClientHandle implements Runnable {
         writeBuffer.flip();
         sc.write(writeBuffer);
         if (!writeBuffer.hasRemaining()) {
-            System.out.println("Send order to server succeed.");
+            log.debug("Send order to server succeed.");
         }
     }
 
