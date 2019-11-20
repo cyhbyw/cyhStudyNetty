@@ -9,6 +9,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.cyh.utils.SleepUtil;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -55,6 +57,7 @@ public class TimeClientHandle implements Runnable {
                 // 多路复用器在线程run()方法的无限循环体内轮询准备就绪的Key
                 selector.select(1000);
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
+                log.trace("selectedKeys.size(): {}", selectedKeys.size());
                 Iterator<SelectionKey> it = selectedKeys.iterator();
                 while (it.hasNext()) {
                     SelectionKey key = it.next();
@@ -95,6 +98,7 @@ public class TimeClientHandle implements Runnable {
                 log.debug("key isConnectable().");
                 if (sc.finishConnect()) {
                     // 判断连接结果，如果连接成功，注册读事件到多路复用器
+                    log.debug("Connect succeed. SocketChannel will register OP_READ to Selector.");
                     sc.register(selector, SelectionKey.OP_READ);
                     doWrite(sc);
                 } else {
@@ -128,12 +132,15 @@ public class TimeClientHandle implements Runnable {
     private void doConnect() throws IOException {
         // 异步连接服务端
         // 如果连接成功，则直接注册读状态位到多路复用器上，发送请求消息，读应答
+        log.debug("SocketChannel will connect to server.");
         if (socketChannel.connect(new InetSocketAddress(host, port))) {
+            log.debug("Directly connect succeed. SocketChannel will register OP_READ to Selector.");
             socketChannel.register(selector, SelectionKey.OP_READ);
             doWrite(socketChannel);
         } else {
             // 当前连接没有成功（异步连接返回False，说明客户端已经发送Sync包但是服务端没有返回Ack包，物理链路还没有建立）
             // 此时向Reactor线程的多路复用器注册 OP_CONNECT 状态位，监听服务端的 TCP Ack 应答
+            log.debug("Directly connect failed. SocketChannel will register OP_CONNECT to Selector.");
             socketChannel.register(selector, SelectionKey.OP_CONNECT);
         }
     }
@@ -142,6 +149,7 @@ public class TimeClientHandle implements Runnable {
      * 向服务端发送消息
      */
     private void doWrite(SocketChannel sc) throws IOException {
+        SleepUtil.sleepMilli(10);
         byte[] req = "QUERY TIME ORDER".getBytes();
         ByteBuffer writeBuffer = ByteBuffer.allocate(req.length);
         writeBuffer.put(req);

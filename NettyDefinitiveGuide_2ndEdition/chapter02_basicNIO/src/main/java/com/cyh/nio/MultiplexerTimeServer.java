@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.cyh.utils.SleepUtil;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -60,6 +62,7 @@ public class MultiplexerTimeServer implements Runnable {
                 // 多路复用器在线程run()方法的无限循环体内轮询准备就绪的Key
                 selector.select(1000);
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
+                log.trace("selectedKeys.size(): {}", selectedKeys.size());
                 Iterator<SelectionKey> it = selectedKeys.iterator();
                 while (it.hasNext()) {
                     SelectionKey key = it.next();
@@ -130,12 +133,16 @@ public class MultiplexerTimeServer implements Runnable {
 
     private void doWrite(SocketChannel channel, String response) throws IOException {
         if (response != null && response.trim().length() > 0) {
+            SleepUtil.sleepMilli(10);
             byte[] bytes = response.getBytes();
             ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
             writeBuffer.put(bytes);
             writeBuffer.flip();
             // 将消息异步发送给客户端
             channel.write(writeBuffer);
+            if (!writeBuffer.hasRemaining()) {
+                log.debug("Send response to client succeed.");
+            }
         }
     }
 }
