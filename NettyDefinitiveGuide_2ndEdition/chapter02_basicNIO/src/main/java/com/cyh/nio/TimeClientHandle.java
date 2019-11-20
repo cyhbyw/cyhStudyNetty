@@ -30,8 +30,11 @@ public class TimeClientHandle implements Runnable {
         this.host = host == null ? "127.0.0.1" : host;
         this.port = port;
         try {
+            // 创建Reactor线程，创建多路复用器
             selector = Selector.open();
+            // 打开SocketChannel，绑定客户端本地地址
             socketChannel = SocketChannel.open();
+            // 设置SocketChannel为非阻塞模式
             socketChannel.configureBlocking(false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,6 +52,7 @@ public class TimeClientHandle implements Runnable {
         }
         while (!stop) {
             try {
+                // 多路复用器在线程run()方法的无限循环体内轮询准备就绪的Key
                 selector.select(1000);
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> it = selectedKeys.iterator();
@@ -85,11 +89,12 @@ public class TimeClientHandle implements Runnable {
 
     private void handleInput(SelectionKey key) throws IOException {
         if (key.isValid()) {
-            // 判断是否连接成功
             SocketChannel sc = (SocketChannel) key.channel();
             if (key.isConnectable()) {
+                // 接受Connect事件进行处理
                 log.debug("key isConnectable().");
                 if (sc.finishConnect()) {
+                    // 判断连接结果，如果连接成功，注册读事件到多路复用器
                     sc.register(selector, SelectionKey.OP_READ);
                     doWrite(sc);
                 } else {
@@ -99,6 +104,7 @@ public class TimeClientHandle implements Runnable {
             if (key.isReadable()) {
                 log.debug("key isReadable(). Will read data");
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+                // 异步读响应消息到缓冲区
                 int readBytes = sc.read(readBuffer);
                 if (readBytes > 0) {
                     readBuffer.flip();
@@ -120,15 +126,21 @@ public class TimeClientHandle implements Runnable {
     }
 
     private void doConnect() throws IOException {
-        // 如果直接连接成功，则注册到多路复用器上，发送请求消息，读应答
+        // 异步连接服务端
+        // 如果连接成功，则直接注册读状态位到多路复用器上，发送请求消息，读应答
         if (socketChannel.connect(new InetSocketAddress(host, port))) {
             socketChannel.register(selector, SelectionKey.OP_READ);
             doWrite(socketChannel);
         } else {
+            // 当前连接没有成功（异步连接返回False，说明客户端已经发送Sync包但是服务端没有返回Ack包，物理链路还没有建立）
+            // 此时向Reactor线程的多路复用器注册 OP_CONNECT 状态位，监听服务端的 TCP Ack 应答
             socketChannel.register(selector, SelectionKey.OP_CONNECT);
         }
     }
 
+    /**
+     * 向服务端发送消息
+     */
     private void doWrite(SocketChannel sc) throws IOException {
         byte[] req = "QUERY TIME ORDER".getBytes();
         ByteBuffer writeBuffer = ByteBuffer.allocate(req.length);
